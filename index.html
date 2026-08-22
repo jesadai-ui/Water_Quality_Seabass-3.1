@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โปรแกรมการจัดการคุณภาพน้ำในบ่อปลากะพงขาว</title>
+    <!-- นำเข้าฟอนต์ Thai Sarabun New (Sarabun) -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #4db6ac 0%, #009688 30%, #00695c 70%, #004d40 100%);
+            background-attachment: fixed;
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.97);
+            max-width: 900px;
+            width: 100%;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+            box-sizing: border-box;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* ดีไซน์กรอบส่วนหัว Ocean Breeze */
+        .header-frame {
+            border: 4px solid #00838F;
+            border-radius: 15px;
+            padding: 25px 10px;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 50%, #80DEEA 100%);
+            box-shadow: 0 6px 15px rgba(0, 131, 143, 0.2);
+            text-align: center;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        
+        .title-text { 
+            background: linear-gradient(90deg, #0277BD, #00838F); 
+            color: #FFFFFF; 
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3); 
+            font-size: clamp(14px, 4vw, 30px); 
+            margin-bottom: 20px; 
+            font-weight: 700; 
+            white-space: nowrap; 
+            line-height: 1.6; 
+            padding: 10px 25px; 
+            border-radius: 50px;
+            display: inline-block;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            border: 2px solid #4DD0E1;
+        }
+        
+        .designer-text { 
+            background-color: #FFFFFF; color: #01579B; padding: 8px 25px;
+            border-radius: 30px; display: inline-block; font-size: 1.5em; 
+            margin: 8px 0; font-weight: 700; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid #4FC3F7;
+        }
+        
+        .uni-text { 
+            background-color: #E1F5FE; color: #0288D1; padding: 5px 20px;
+            border-radius: 20px; display: inline-block; font-size: 1.4em; 
+            margin: 5px 0; font-weight: 700; border: 1px solid #81D4FA;
+        }
+        
+        .version-text { 
+            background-color: #E0F2F1; color: #00695C; padding: 8px 25px;
+            border-radius: 30px; display: inline-block; font-size: 1.3em; 
+            margin-top: 15px; font-weight: 700; border: 2px dashed #4DB6AC;
+        }
+        
+        .section-card { border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); border-top: 5px solid; }
+        .card-general { background-color: #FFF3E0; border-top-color: #FFB74D; border-left: 1px solid #FFE0B2; border-right: 1px solid #FFE0B2; border-bottom: 1px solid #FFE0B2; } 
+        .card-dimension { background-color: #E8F5E9; border-top-color: #4CAF50; border-left: 1px solid #C8E6C9; border-right: 1px solid #C8E6C9; border-bottom: 1px solid #C8E6C9; } 
+        .card-params  { background-color: #E8EAF6; border-top-color: #7986CB; border-left: 1px solid #C5CAE9; border-right: 1px solid #C5CAE9; border-bottom: 1px solid #C5CAE9; } 
+        .card-actions { background-color: #E0F2F1; border-top-color: #4DB6AC; border-left: 1px solid #B2DFDB; border-right: 1px solid #B2DFDB; border-bottom: 1px solid #B2DFDB; } 
+
+        .section-title { color: #333; font-size: 1.5em; font-weight: 700; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px dashed rgba(0,0,0,0.2); display: flex; align-items: center; }
+        .section-title span { font-size: 1.2em; margin-right: 10px; }
+
+        .form-row { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; }
+        .form-group { flex: 1; min-width: 200px; display: flex; flex-direction: column; }
+        .form-group-full { width: 100%; display: flex; flex-direction: column; margin-bottom: 15px; }
+        
+        label { font-weight: 700; margin-bottom: 5px; color: #263238; font-size: 1.2em; }
+        
+        input[type="number"], input[type="text"], input[type="date"], select {
+            background-color: #E3F2FD; text-align: center; padding: 12px; border: 1px solid #90CAF9; border-radius: 8px; font-size: 1.2em; color: #000; font-family: 'Sarabun', sans-serif; font-weight: bold; transition: all 0.3s ease;
+        }
+        input[type="number"]:focus, input[type="text"]:focus, input[type="date"]:focus, select:focus {
+            background-color: #FFFFFF; border-color: #2196F3; box-shadow: 0 0 12px rgba(33, 150, 243, 0.6); outline: none;
+        }
+        input::placeholder { color: #90CAF9; font-weight: normal; }
+        
+        .input-group-addon { display: flex; align-items: stretch; }
+        .input-group-addon input { flex: 1; border-top-right-radius: 0; border-bottom-right-radius: 0; }
+        .input-group-addon span { background-color: #FFF9C4; border: 1px solid #90CAF9; border-left: none; padding: 0 15px; display: flex; align-items: center; border-top-right-radius: 8px; border-bottom-right-radius: 8px; font-weight: bold; color: #388E3C; font-family: 'Sarabun', sans-serif; }
+
+        .pond-input-group { display: flex; gap: 10px; }
+        .pond-input-group select { flex: 1; }
+
+        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 15px; }
+        button { padding: 12px 20px; font-size: 1.2em; font-family: 'Sarabun', sans-serif; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; color: #fff; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.15); }
+        .btn-add { background-color: #FF9800; padding: 12px; width: auto; flex-shrink: 0; }
+        .btn-add:hover { background-color: #F57C00; }
+        .btn-process { background-color: #3F51B5; width: 100%; margin-top: 15px; font-size: 1.5em; padding: 15px; box-shadow: 0 6px 12px rgba(63, 81, 181, 0.3); }
+        .btn-process:hover { background-color: #303F9F; transform: translateY(-3px); }
+        .btn-save-all { background-color: #00897B; flex: 1; min-width: 250px;}
+        .btn-load-file { background-color: #0288D1; flex: 1; min-width: 200px;}
+        .btn-show-hist { background-color: #6D4C41; flex: 1; min-width: 200px;}
+        .btn-clear { background-color: #E53935; flex: 1; min-width: 150px;}
+        .btn-print { background-color: #FDD835; color: #333; flex: 1; min-width: 150px;}
+        .btn-exit { background-color: #424242; flex: 1; min-width: 150px; }
+
+        #result-section { margin-top: 30px; display: none; }
+        .result-header { color: #00695C; text-align: center; font-size: 1.8em; font-weight: 700; margin-bottom: 20px; border-bottom: 3px double #00695C; padding-bottom: 10px; }
+        
+        #history-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
+        .modal-content { background-color: #fff; padding: 25px; border-radius: 12px; width: 95%; max-width: 750px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Sarabun', sans-serif; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; }
+        .modal-header h2 { margin: 0; color: #00695C; font-weight: bold; }
+        .close-btn { background-color: #E53935; padding: 8px 15px; font-size: 1.1em; }
+        .history-item { background: #f1f8e9; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 5px solid #4CAF50; display: flex; justify-content: space-between; align-items: center; }
+        .hist-details { font-size: 1.15em; }
+        .hist-actions button { font-size: 1.1em; padding: 8px 15px; margin-left: 5px; }
+
+        .btn-hist-load { background-color: #0288D1; color: #ffffff; }
+        .btn-hist-load:hover { background-color: #0277BD; }
+        .btn-hist-del { background-color: #E53935; color: #ffffff; }
+        .btn-hist-del:hover { background-color: #C62828; }
+
+        .shap-container { background: #fff; border: 2px solid #1A237E; border-radius: 10px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .shap-title { font-size: 1.4em; color: #1A237E; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #E8EAF6; padding-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .shap-bar-bg { width: 100%; background-color: #E0E0E0; border-radius: 5px; overflow: hidden; margin-top: 5px; height: 14px; }
+        .shap-bar-fill { height: 100%; border-radius: 5px; transition: width 0.5s ease-in-out; }
+        .shap-item { margin-bottom: 15px; }
+
+        .action-box { background-color: #F1F8E9; padding: 20px; border-left: 6px solid #4CAF50; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .action-title { font-size: 1.3em; color: #2E7D32; font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .action-list { margin: 0; padding-left: 0; list-style-type: none; }
+        .action-list li { margin-bottom: 15px; font-size: 1.15em; color: #333; line-height: 1.6; background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #C8E6C9; }
+        .action-list li strong { color: #1B5E20; display: inline-block; font-size: 1.05em; }
+
+        .highlight-danger { color: #D32F2F; font-weight: bold; background-color: #FFEBEE; padding: 2px 6px; border-radius: 4px; border: 1px solid #FFCDD2; display: inline-block; margin-top: 3px; }
+        .location-highlight { color: #0277BD; background-color: #E1F5FE; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 8px; border: 1px dashed #4FC3F7; font-size: 0.95em; }
+        
+        .hidden { display: none !important; }
+
+        #custom-notif {
+            display: none; position: fixed; top: 20px; right: 20px; 
+            background-color: #4CAF50; color: white; padding: 15px 25px; 
+            border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+            font-size: 1.2em; font-weight: bold; z-index: 9999;
+            transition: opacity 0.3s ease-in-out; opacity: 0;
+        }
+
+        .counter-box {
+            text-align: center; margin-top: 30px; font-size: 1.2em; color: #00695C; 
+            font-weight: 700; background: #E0F2F1; padding: 15px; border-radius: 12px; 
+            border: 2px dashed #4DB6AC; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .designer-text, .uni-text { font-size: 1.3em; padding: 5px 15px; }
+            button { width: 100%; margin-bottom: 5px; }
+            .history-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .hist-actions { width: 100%; display: flex; justify-content: space-between; }
+        }
+        @media print {
+            body { background: #fff; }
+            .container { box-shadow: none; width: 100%; padding: 0; border: none; }
+            .header-frame { box-shadow: none; border: 2px solid #000; background: none; }
+            .title-text, .designer-text, .uni-text, .version-text { box-shadow: none; border: none; background: none !important; color: #000 !important; }
+            .section-card { border: 1px solid #000; box-shadow: none; padding: 15px; break-inside: avoid; background: none !important; }
+            .card-actions, .counter-box, #history-modal { display: none; }
+            input, select { border: none; background: transparent !important; text-align: left; }
+            .shap-container { border: 1px solid #000; }
+        }
+    </style>
+</head>
+<body id="main-body">
+
+<div id="custom-notif"></div>
+
+<div class="container" id="main-container">
+    <div class="header-frame">
+        <div class="title-text">โปรแกรมการจัดการคุณภาพน้ำในบ่อปลากะพงขาว</div><br>
+        <div class="designer-text">ผู้ออกแบบและพัฒนาโปรแกรม: รศ.ดร.เจษฎา อิสเหาะ</div><br>
+        <div class="uni-text">มหาวิทยาลัยเทคโนโลยีราชมงคลสุวรรณภูมิ</div><br>
+        <div class="version-text">เวอร์ชั่น 1-2569 (20 สิงหาคม 2569)</div>
+    </div>
+
+    <!-- ส่วนที่ 1: ข้อมูลทั่วไป -->
+    <div class="section-card card-general">
+        <div class="section-title"><span>📝</span> 1. ข้อมูลทั่วไป</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>บ่อที่เก็บคุณภาพน้ำ:</label>
+                <div class="pond-input-group">
+                    <select id="pond-select" class="cell-input">
+                        <option value="บ่อที่ 1">บ่อที่ 1</option>
+                        <option value="บ่อที่ 2">บ่อที่ 2</option>
+                        <option value="บ่อที่ 3">บ่อที่ 3</option>
+                    </select>
+                    <button class="btn-add" onclick="addPond()">+ เพิ่มบ่อ</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>วัน/เดือน/ปี ที่ตรวจวัด:</label>
+                <input type="date" id="record-date" class="cell-input" placeholder="กรอกข้อมูล">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>ช่วงเวลาที่ตรวจวัด:</label>
+                <select id="time-select" class="cell-input">
+                    <option value="morning">ช่วงเช้า (04.30 - 05.00 น.)</option>
+                    <option value="afternoon">ช่วงบ่าย (16.00 - 17.00 น.)</option>
+                    <option value="other">เวลาอื่นๆ ทั่วไป</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>ชื่อ-นามสกุล ผู้บันทึก:</label>
+                <input type="text" id="recorder-name" class="cell-input" placeholder="กรอกข้อมูล">
+            </div>
+        </div>
+    </div>
+
+    <!-- ส่วนที่ 2: ข้อมูลขนาดบ่อและระบบการเลี้ยง -->
+    <div class="section-card card-dimension">
+        <div class="section-title"><span>📐</span> 2. ข้อมูลระบบการเลี้ยงและขนาดบ่อ</div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>ระบบการเลี้ยง:</label>
+                <select id="system-type" class="cell-input" onchange="togglePondInputs()">
+                    <option value="open">ระบบเปิด (บ่อดิน)</option>
+                    <option value="closed">ระบบปิด (บ่อปูน / ถังไฟเบอร์ / ผ้าใบ / RAS)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>รูปทรงบ่อ:</label>
+                <select id="pond-shape" class="cell-input" onchange="togglePondInputs()">
+                    <option value="rect">บ่อรูปสี่เหลี่ยม</option>
+                    <option value="circle">บ่อรูปทรงกลม</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row" id="row-dimension-rect" style="display: flex;">
+            <div class="form-group">
+                <label>ความกว้างปากบ่อ:</label>
+                <div class="input-group-addon">
+                    <input type="number" id="dim-width" class="cell-input" step="0.1" value="" placeholder="กรอกข้อมูล">
+                    <span>เมตร</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>ความยาวปากบ่อ:</label>
+                <div class="input-group-addon">
+                    <input type="number" id="dim-length" class="cell-input" step="0.1" value="" placeholder="กรอกข้อมูล">
+                    <span>เมตร</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row" id="row-dimension-circle" style="display: none;">
+            <div class="form-group">
+                <label>เส้นผ่านศูนย์กลางบ่อ:</label>
+                <div class="input-group-addon">
+                    <input type="number" id="dim-diameter" class="cell-input" step="0.1" value="" placeholder="กรอกข้อมูล">
+                    <span>เมตร</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>ความลึกบ่อทั้งหมด:</label>
+                <div class="input-group-addon">
+                    <input type="number" id="dim-depth-total" class="cell-input" step="0.1" value="" placeholder="กรอกข้อมูล">
+                    <span>เมตร</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label style="color:#1565C0;">ความลึกของน้ำจริง (ใช้คำนวณ):</label>
+                <div class="input-group-addon">
+                    <input type="number" id="dim-depth-water" class="cell-input data-cell" step="0.1" value="" placeholder="กรอกข้อมูล">
+                    <span>เมตร</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- กล่องความชันตลิ่ง ปลดล็อกให้แสดงผลเสมอในทุกกรณี -->
+        <div class="form-row" id="row-slope" style="display: flex;">
+            <div class="form-group-full">
+                <label>สัดส่วนความชันตลิ่ง (Slope Ratio V : H):</label>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="flex:1;">
+                        <input type="number" id="slope-v" class="cell-input" step="0.1" value="" placeholder="กรอกข้อมูล">
+                        <div style="text-align:center; font-size:0.9em; color:#666; margin-top:5px;">แนวดิ่ง (V) เช่น ความลึกจริง</div>
+                    </div>
+                    <strong style="font-size: 1.5em;">:</strong>
+                    <div style="flex:1;">
+                        <input type="number" id="slope-h" class="cell-input" step="0.1" value="" placeholder="กรอกข้อมูล">
+                        <div style="text-align:center; font-size:0.9em; color:#666; margin-top:5px;">แนวนอน (H) เช่น ระยะลาดเอียง</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ส่วนที่ 3: พารามิเตอร์คุณภาพน้ำ -->
+    <div class="section-card card-params">
+        <div class="section-title"><span>💧</span> 3. บันทึกข้อมูลคุณภาพน้ำที่ทำการตรวจวัดประจำวัน</div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>1. ระดับออกซิเจน (DO) (mg/L):</label>
+                <input type="number" id="do" class="cell-input data-cell" step="0.1" value="" placeholder="กรอกข้อมูล">
+            </div>
+            <div class="form-group">
+                <label>2. อุณหภูมิ (°C):</label>
+                <input type="number" id="temp" class="cell-input data-cell" step="0.1" value="" placeholder="กรอกข้อมูล">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>3. ความเป็นกรด-ด่าง (pH):</label>
+                <input type="number" id="ph" class="cell-input data-cell" step="0.1" value="" placeholder="กรอกข้อมูล">
+            </div>
+            <div class="form-group">
+                <label>4. แอมโมเนียรวม (TAN) (mg/L):</label>
+                <input type="number" id="tan" class="cell-input data-cell" step="0.1" value="" placeholder="กรอกข้อมูล">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>5. ไนไตรท์ (NO<sub>2</sub><sup>-</sup>) (mg/L):</label>
+                <input type="number" id="no2" class="cell-input data-cell" step="0.1" value="" placeholder="กรอกข้อมูล">
+            </div>
+            <div class="form-group">
+                <label>6. ความเป็นด่าง (Alkalinity) (mg/L):</label>
+                <input type="number" id="alk" class="cell-input data-cell" step="1" value="" placeholder="กรอกข้อมูล">
+            </div>
+        </div>
+        
+        <div class="form-group-full">
+            <label>7. ความโปร่งใสของน้ำ (cm):</label>
+            <input type="number" id="transparency" class="cell-input data-cell" step="1" value="" placeholder="กรอกข้อมูล">
+        </div>
+        
+        <button class="btn-process" onclick="processData()">⚙️ ประมวลผล วิเคราะห์ และคำนวณปริมาณสารเคมี</button>
+    </div>
+
+    <div id="result-section">
+        <div class="result-header">ผลการประเมินสภาพแวดล้อมภายในบ่อ</div>
+        <div id="shap-summary" style="display:none;"></div>
+        <div id="result-content" style="margin-top: 20px;"></div>
+    </div>
+
+    <div class="section-card card-actions">
+        <div class="section-title"><span>⚙️</span> 4. การจัดการและการบันทึกข้อมูล</div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <input type="text" id="filename-input" class="cell-input" style="padding:12px; font-size:1.1em; width: 100%; box-sizing: border-box;" placeholder="ตั้งชื่อไฟล์ก่อนบันทึก (เช่น วันที่_บ่อปลากะพง1)">
+            <div class="btn-group" style="margin-top: 5px;">
+                <button class="btn-save-all" onclick="saveAll()">💾 บันทึกข้อมูล (ลงเครื่อง + ประวัติ)</button>
+                <button class="btn-load-file" onclick="document.getElementById('file-upload').click()">📂 โหลดข้อมูลจากไฟล์</button>
+                <input type="file" id="file-upload" accept=".json" style="display: none;" onchange="loadFromFile(event)">
+                <button class="btn-show-hist" onclick="openHistoryModal()">🕒 ดูประวัติย้อนหลัง</button>
+            </div>
+            <div class="btn-group">
+                <button class="btn-clear" id="btn-clear" onclick="clearData(this)">🧹 ล้างหน้าจอ</button>
+                <button class="btn-print" onclick="window.print()">🖨️ สั่งพิมพ์ / Save PDF</button>
+                <button class="btn-exit" id="btn-exit" onclick="exitProgram(this)">❌ ออกจากโปรแกรม</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="counter-box" id="visitorCounter">กำลังเชื่อมต่อข้อมูลผู้ใช้งาน...</div>
+
+</div>
+
+<div id="history-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>🕒 ประวัติการบันทึกข้อมูลย้อนหลัง</h2>
+            <button class="close-btn" onclick="closeHistoryModal()">ปิด X</button>
+        </div>
+        <div id="history-list"></div>
+    </div>
+</div>
+
+<script>
+    let memoryStorage = {};
+    function safeGetStorage(key) { try { return localStorage.getItem(key); } catch (e) { return memoryStorage[key] || null; } }
+    function safeSetStorage(key, value) { try { localStorage.setItem(key, value); } catch (e) { memoryStorage[key] = value; } }
+
+    function showNotif(msg, isError = false) {
+        let notif = document.getElementById('custom-notif');
+        notif.innerHTML = msg;
+        notif.style.backgroundColor = isError ? "#E53935" : "#4CAF50";
+        notif.style.display = 'block';
+        setTimeout(() => { notif.style.opacity = '1'; }, 10);
+        setTimeout(() => { 
+            notif.style.opacity = '0'; 
+            setTimeout(() => { notif.style.display = 'none'; }, 300);
+        }, 3000);
+    }
+
+    // --- ระบบ Hybrid Counter สำหรับนับยอดเข้าใช้งาน (เริ่มที่ 32) ---
+    async function initVisitorCounter() {
+        const localKey = 'seabassApp_TotalVisits_v5'; 
+        let localCount = parseInt(safeGetStorage(localKey));
+        
+        if (isNaN(localCount) || localCount < 31) {
+            localCount = 31; 
+        }
+        
+        try {
+            const response = await fetch('https://api.counterapi.dev/v1/tkfarm_seabass/main_app_v5/up');
+            if (response.ok) {
+                const data = await response.json();
+                let globalCount = data.count + 31; 
+                if (globalCount < localCount) globalCount = localCount + 1;
+                safeSetStorage(localKey, globalCount);
+                document.getElementById('visitorCounter').innerHTML = `🌐 ยอดเปิดใช้งานโปรแกรมสะสม: <strong>${globalCount.toLocaleString()}</strong> ครั้ง`;
+            } else {
+                throw new Error('API Unavailable');
+            }
+        } catch (error) {
+            localCount++;
+            safeSetStorage(localKey, localCount);
+            document.getElementById('visitorCounter').innerHTML = `📱 ยอดเปิดใช้งานโปรแกรมสะสม (ออฟไลน์): <strong>${localCount.toLocaleString()}</strong> ครั้ง`;
+        }
+    }
+    
+    initVisitorCounter();
+
+    const allInputs = document.querySelectorAll('.cell-input');
+    allInputs.forEach((input, index) => {
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowDown' || (e.key === 'ArrowRight' && input.type !== 'text' && input.type !== 'date' && input.tagName !== 'SELECT')) {
+                e.preventDefault();
+                if (index < allInputs.length - 1) allInputs[index + 1].focus();
+            } else if (e.key === 'ArrowUp' || (e.key === 'ArrowLeft' && input.type !== 'text' && input.type !== 'date' && input.tagName !== 'SELECT')) {
+                e.preventDefault();
+                if (index > 0) allInputs[index - 1].focus();
+            }
+        });
+    });
+
+    document.getElementById('record-date').valueAsDate = new Date();
+
+    let pondCounter = 3;
+    function addPond() {
+        pondCounter++;
+        let newPond = "บ่อที่ " + pondCounter;
+        let select = document.getElementById('pond-select');
+        let option = document.createElement("option");
+        option.value = newPond;
+        option.text = newPond;
+        select.appendChild(option);
+        select.value = option.value;
+        showNotif("✅ เพิ่ม " + newPond + " สำเร็จ");
+    }
+
+    function togglePondInputs() {
+        const shape = document.getElementById('pond-shape').value;
+        const rowRect = document.getElementById('row-dimension-rect');
+        const rowCircle = document.getElementById('row-dimension-circle');
+        const rowSlope = document.getElementById('row-slope');
+
+        if(shape === 'rect') {
+            rowRect.style.display = 'flex';
+            rowCircle.style.display = 'none';
+        } else {
+            rowRect.style.display = 'none';
+            rowCircle.style.display = 'flex';
+        }
+
+        // แสดงความชันตลิ่งเสมอทุกกรณี
+        rowSlope.style.display = 'flex';
+    }
+    
+    togglePondInputs();
+
+    function calculateVolume() {
+        const shape = document.getElementById('pond-shape').value;
+        const waterDepth = parseFloat(document.getElementById('dim-depth-water').value) || 0;
+        if(waterDepth <= 0) return 0;
+
+        // รับค่า V และ H จากหน้าจอ (ถ้าว่างให้เป็น 1 และ 0 ตามลำดับเพื่อป้องกัน Error หารศูนย์)
+        const slopeVRaw = parseFloat(document.getElementById('slope-v').value);
+        const slopeHRaw = parseFloat(document.getElementById('slope-h').value);
+        
+        const slopeV = (isNaN(slopeVRaw) || slopeVRaw <= 0) ? 1 : slopeVRaw;
+        const slopeH = (isNaN(slopeHRaw)) ? 0 : slopeHRaw;
+        const ratio = slopeH / slopeV;
+
+        if(shape === 'rect') {
+            const wTop = parseFloat(document.getElementById('dim-width').value) || 0;
+            const lTop = parseFloat(document.getElementById('dim-length').value) || 0;
+            if(wTop <= 0 || lTop <= 0) return 0;
+            if(ratio === 0) return wTop * lTop * waterDepth;
+            
+            const wBot = wTop - (2 * waterDepth * ratio);
+            const lBot = lTop - (2 * waterDepth * ratio);
+            if(wBot < 0 || lBot < 0) return (wTop * lTop * waterDepth) / 2; 
+            
+            const areaTop = wTop * lTop;
+            const areaBot = wBot * lBot;
+            return (waterDepth / 3) * (areaTop + areaBot + Math.sqrt(areaTop * areaBot));
+        } else {
+            const diameterTop = parseFloat(document.getElementById('dim-diameter').value) || 0;
+            if(diameterTop <= 0) return 0;
+            if(ratio === 0) return Math.PI * Math.pow(diameterTop / 2, 2) * waterDepth;
+
+            const diameterBot = diameterTop - (2 * waterDepth * ratio);
+            if(diameterBot < 0) {
+                // หากลาดชันจนก้นบ่อแหลมเป็นกรวย
+                const radius = diameterTop / 2;
+                return (Math.PI * Math.pow(radius, 2) * waterDepth) / 3;
+            }
+            const areaTop = Math.PI * Math.pow(diameterTop / 2, 2);
+            const areaBot = Math.PI * Math.pow(diameterBot / 2, 2);
+            return (waterDepth / 3) * (areaTop + areaBot + Math.sqrt(areaTop * areaBot));
+        }
+    }
+
+    function getCurrentData() {
+        return {
+            pond: document.getElementById('pond-select').value,
+            date: document.getElementById('record-date').value,
+            timeOfDay: document.getElementById('time-select').value,
+            recorder: document.getElementById('recorder-name').value,
+            sysType: document.getElementById('system-type').value,
+            shape: document.getElementById('pond-shape').value,
+            dimW: document.getElementById('dim-width').value,
+            dimL: document.getElementById('dim-length').value,
+            dimD: document.getElementById('dim-diameter').value,
+            depthTot: document.getElementById('dim-depth-total').value,
+            depthWat: document.getElementById('dim-depth-water').value,
+            slopeV: document.getElementById('slope-v').value,
+            slopeH: document.getElementById('slope-h').value,
+            ph: document.getElementById('ph').value,
+            do: document.getElementById('do').value,
+            temp: document.getElementById('temp').value,
+            tan: document.getElementById('tan').value,
+            no2: document.getElementById('no2').value,
+            alk: document.getElementById('alk').value,
+            transparency: document.getElementById('transparency').value,
+            timestamp: new Date().getTime()
+        };
+    }
+
+    function populateForm(data) {
+        if(data.pond) {
+            let select = document.getElementById('pond-select');
+            if(!Array.from(select.options).some(opt => opt.value === data.pond)) {
+                let opt = document.createElement("option");
+                opt.value = data.pond; opt.text = data.pond; select.appendChild(opt);
+            }
+            select.value = data.pond;
+        }
+        if(data.date) document.getElementById('record-date').value = data.date;
+        if(data.timeOfDay) document.getElementById('time-select').value = data.timeOfDay;
+        if(data.recorder !== undefined) document.getElementById('recorder-name').value = data.recorder;
+        if(data.sysType) document.getElementById('system-type').value = data.sysType;
+        if(data.shape) document.getElementById('pond-shape').value = data.shape;
+        togglePondInputs();
+        if(data.dimW) document.getElementById('dim-width').value = data.dimW;
+        if(data.dimL) document.getElementById('dim-length').value = data.dimL;
+        if(data.dimD) document.getElementById('dim-diameter').value = data.dimD;
+        if(data.depthTot) document.getElementById('dim-depth-total').value = data.depthTot;
+        if(data.depthWat) document.getElementById('dim-depth-water').value = data.depthWat;
+        if(data.slopeV !== undefined) document.getElementById('slope-v').value = data.slopeV;
+        if(data.slopeH !== undefined) document.getElementById('slope-h').value = data.slopeH;
+        if(data.ph !== undefined) document.getElementById('ph').value = data.ph;
+        if(data.do !== undefined) document.getElementById('do').value = data.do;
+        if(data.temp !== undefined) document.getElementById('temp').value = data.temp;
+        if(data.tan !== undefined) document.getElementById('tan').value = data.tan;
+        if(data.no2 !== undefined) document.getElementById('no2').value = data.no2;
+        if(data.alk !== undefined) document.getElementById('alk').value = data.alk;
+        if(data.transparency !== undefined) document.getElementById('transparency').value = data.transparency;
+        showNotif("✅ โหลดข้อมูลเข้าสู่หน้าจอเรียบร้อยแล้ว");
+    }
+
+    function saveAll() {
+        let data = getCurrentData();
+        let history = JSON.parse(safeGetStorage('seabassHistory') || "[]");
+        history.unshift(data);
+        safeSetStorage('seabassHistory', JSON.stringify(history));
+
+        const jsonStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        let filename = document.getElementById('filename-input').value.trim() || `ข้อมูลบ่อปลากะพง_${data.pond}_${data.date}`;
+        
+        const a = document.createElement('a');
+        a.href = url; a.download = filename + ".json";
+        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+        showNotif("💾 บันทึกประวัติและดาวน์โหลดไฟล์เรียบร้อย");
+    }
+
+    function loadFromFile(event) {
+        const file = event.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try { populateForm(JSON.parse(e.target.result)); } 
+            catch (err) { showNotif("❌ ไฟล์ไม่ถูกต้อง", true); }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    function openHistoryModal() {
+        renderHistoryList();
+        document.getElementById('history-modal').style.display = 'flex';
+    }
+    
+    function closeHistoryModal() {
+        document.getElementById('history-modal').style.display = 'none';
+    }
+
+    let delTimeout;
+    function deleteHistoryItem(btn, index) {
+        if(btn.innerText === "ยืนยันลบ?") {
+            let history = JSON.parse(safeGetStorage('seabassHistory') || "[]");
+            history.splice(index, 1);
+            safeSetStorage('seabassHistory', JSON.stringify(history));
+            renderHistoryList();
+            showNotif("🗑️ ลบประวัติเรียบร้อย");
+        } else {
+            btn.innerText = "ยืนยันลบ?";
+            btn.style.backgroundColor = "#B71C1C";
+            clearTimeout(delTimeout);
+            delTimeout = setTimeout(() => { btn.innerText = "ลบ"; btn.style.backgroundColor = ""; }, 3000);
+        }
+    }
+
+    function renderHistoryList() {
+        let history = JSON.parse(safeGetStorage('seabassHistory') || "[]");
+        let listHtml = history.length === 0 ? '<p style="text-align:center; color:#555;">ยังไม่มีข้อมูลประวัติการบันทึก</p>' : '';
+        history.forEach((item, index) => {
+            let displayDate = item.date || 'ไม่ได้ระบุวันที่';
+            listHtml += `
+            <div class="history-item">
+                <div class="hist-details"><strong>${item.pond}</strong> | วันที่: ${displayDate}<br><span style="color:#555; font-size:0.9em;">ผู้บันทึก: ${item.recorder || '-' }</span></div>
+                <div class="hist-actions">
+                    <button class="btn-hist-load" onclick="loadHistoryItem(${index})">ดึงข้อมูล</button>
+                    <button class="btn-hist-del" onclick="deleteHistoryItem(this, ${index})">ลบ</button>
+                </div>
+            </div>`;
+        });
+        document.getElementById('history-list').innerHTML = listHtml;
+    }
+
+    function loadHistoryItem(index) {
+        let history = JSON.parse(safeGetStorage('seabassHistory') || "[]");
+        if(history[index]) { populateForm(history[index]); closeHistoryModal(); }
+    }
+
+    let clearTimeoutRef;
+    function clearData(btn) {
+        if(btn.innerText === "🧹 ยืนยันการล้าง?") {
+            document.querySelectorAll('input[type="number"], input[type="text"]').forEach(input => {
+                input.value = '';
+            });
+            document.getElementById('shap-summary').style.display = 'none';
+            document.getElementById('result-section').style.display = 'none';
+            document.getElementById('ph').focus();
+            btn.innerText = "🧹 ล้างหน้าจอ";
+            btn.style.backgroundColor = "";
+            showNotif("🧹 ล้างข้อมูลหน้าจอเรียบร้อย");
+        } else {
+            btn.innerText = "🧹 ยืนยันการล้าง?";
+            btn.style.backgroundColor = "#B71C1C";
+            clearTimeout(clearTimeoutRef);
+            clearTimeoutRef = setTimeout(() => { btn.innerText = "🧹 ล้างหน้าจอ"; btn.style.backgroundColor = ""; }, 3000);
+        }
+    }
+
+    let exitTimeoutRef;
+    function exitProgram(btn) {
+        if(btn.innerText === "❌ ยืนยันการออก?") {
+            try { window.close(); } catch(e) {}
+            document.getElementById('main-container').style.display = 'none';
+            document.getElementById('main-body').innerHTML = `
+                <div style="text-align:center; margin-top:20vh; color:#fff; font-family:'Sarabun',sans-serif;">
+                    <h1 style="font-size:3em; text-shadow:2px 2px 5px rgba(0,0,0,0.5);">ปิดการทำงานโปรแกรมเรียบร้อยแล้ว</h1>
+                    <button onclick="location.reload()" style="margin-top:20px; padding:15px; background:#4CAF50; color:white; border:none; border-radius:8px; font-size:1.2em; cursor:pointer;">กลับเข้าสู่โปรแกรมอีกครั้ง</button>
+                </div>
+            `;
+        } else {
+            btn.innerText = "❌ ยืนยันการออก?";
+            btn.style.backgroundColor = "#B71C1C";
+            clearTimeout(exitTimeoutRef);
+            exitTimeoutRef = setTimeout(() => { btn.innerText = "❌ ออกจากโปรแกรม"; btn.style.backgroundColor = ""; }, 3000);
+        }
+    }
+
+    function createResultBox(title, status, guidelines, colorCode) {
+        let borderColor, bgColor, textColor;
+        if(colorCode === 'green') { borderColor = '#2e7d32'; bgColor = '#e8f5e9'; textColor = '#1b5e20'; } 
+        else if(colorCode === 'yellow') { borderColor = '#fbc02d'; bgColor = '#fffde7'; textColor = '#e65100'; } 
+        else if(colorCode === 'orange') { borderColor = '#ef6c00'; bgColor = '#fff3e0'; textColor = '#d84315'; } 
+        else if(colorCode === 'red') { borderColor = '#c62828'; bgColor = '#ffebee'; textColor = '#b71c1c'; }
+
+        return `
+        <div style="border-left: 6px solid ${borderColor}; background-color: ${bgColor}; padding: 15px; margin-bottom: 15px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <strong style="font-size: 1.2em; color: #333;">${title}</strong><br>
+            <span style="color: ${textColor}; font-weight: bold; font-size: 1.15em; display: inline-block; margin-top: 5px;">สถานะ/ผลกระทบ: ${status}</span><br>
+            <span style="color: #444; font-size: 1.1em; display: inline-block; margin-top: 5px;">แนวทางจัดการ: ${guidelines}</span>
+        </div>`;
+    }
+
+    function formatWeight(kg) {
+        if(kg < 1) return `<strong style="color:#D84315;">${(kg * 1000).toFixed(0)} กรัม</strong>`;
+        return `<strong style="color:#D84315;">${kg.toFixed(2)} กิโลกรัม</strong>`;
+    }
+
+    function formatVolume(vol) {
+        return `<strong style="color:#1565C0;">${vol.toFixed(2)} ลบ.ม. (หรือ ${(vol * 1000).toFixed(0)} ลิตร)</strong>`;
+    }
+
+    function getAdvice(id, val, vol, sysType) {
+        let msg = "";
+        
+        if(id === 'do') {
+            msg = "🐟 <strong style='font-size: 1.1em;'>เร่งเติมอากาศด่วนที่สุด</strong><br>";
+            if(sysType === 'open') {
+                msg += `ให้ <strong>ตีน้ำเพิ่ม 1 แขน ครบ 1 ชั่วโมงวัดออกซิเจนใหม่อีกครั้ง</strong> และ <span class='highlight-danger'>งดให้อาหารชั่วคราว</span><br><span class='location-highlight'>📍 <strong>ตำแหน่ง:</strong> บริเวณที่ปลาลอยหัว หรือเปิดเครื่องตีน้ำให้ครอบคลุมทั่วบ่อ</span>`;
+            } else {
+                msg += `ให้ <strong>เพิ่มกำลังปั๊มลม (Blower/Air pump) หรือเปิดวาล์วหัวทรายเต็มพิกัด ครบ 1 ชั่วโมงวัดออกซิเจนใหม่อีกครั้ง</strong> และ <span class='highlight-danger'>งดให้อาหารชั่วคราว</span><br><span class='location-highlight'>📍 <strong>ตำแหน่ง:</strong> วางหัวทรายกระจายทั่วบ่อ และเน้นใน <strong>ช่องกรอง (Biofilter)</strong></span>`;
+            }
+        }
+        else if(id === 'tan') {
+            let vol15 = formatVolume(vol * 0.15);
+            let vol20 = formatVolume(vol * 0.20);
+            msg = `🛑 <strong style="color:#D32F2F; font-size: 1.1em;">ลดอาหาร 10-20%</strong><br>แนะนำให้ <strong>ถ่ายน้ำ 15-20% แล้วเติมน้ำเข้า</strong> ซึ่งคิดเป็นปริมาตร<br>${vol15} ถึง ${vol20}<br>`;
+            if(sysType === 'open') {
+                let zeoliteDose = (20 * vol) / 1600; 
+                msg += `และ <strong>แขวนซีโอไลท์ ปริมาณ ${formatWeight(zeoliteDose)}</strong> (อ้างอิง 15-20 กก./ไร่)<br><span class='location-highlight'>📍 <strong>ตำแหน่ง:</strong> แขวนหรือหว่านกระจายให้ทั่วบ่อเลี้ยง</span>`;
+            } else {
+                let microbeDose = (10 * vol) / 1000; 
+                msg += `<span class='highlight-danger'>ห้ามใช้ซีโอไลต์ผงในระบบปิด</span> (กรองจะอุดตัน)<br>แนะนำให้ <strong>เสริมจุลินทรีย์ไนตริไฟอิง ปริมาณ ${formatWeight(microbeDose)}</strong><br><span class='location-highlight'>📍 <strong>ตำแหน่ง:</strong> ผสมน้ำเทลงใน <strong>ช่องกรองชีวภาพ (Biofilter)</strong> โดยตรง</span>`;
+            }
+        }
+        else if(id === 'no2') {
+            let vol16 = formatVolume(vol * 0.16);
+            let vol17 = formatVolume(vol * 0.17);
+            msg = `⚠️ <strong style="color:#E65100; font-size: 1.1em;">ปรับลดอาหาร 10-20%</strong><br>และ <span class='highlight-danger'>ถ่ายน้ำอย่างต่อเนื่อง 16-17%/วัน</span> (ปริมาตร ${vol16} ถึง ${vol17})<br>ควบคุม pH ให้อยู่ในช่วง 7.2 - 7.4 แนะนำให้<br>`;
+            if(sysType === 'open') {
+                let saltDose = (140 * vol) / 1600; 
+                msg += `<strong>เติมเกลือ (NaCl) ปริมาณ ${formatWeight(saltDose)}</strong> (อ้างอิง 140 กก./วัน/ไร่) เพื่อลดผลกระทบทางเลือด<br><span class='location-highlight'>📍 <strong>ตำแหน่ง:</strong> สาดกระจายให้ทั่วบ่อเลี้ยง หรือหน้าเครื่องตีน้ำ</span>`;
+            } else {
+                let saltDose = (140 * vol) / 1600; 
+                let microbeDose = (10 * vol) / 1000; 
+                msg += `<strong>เติมเกลือ (NaCl) ปริมาณ ${formatWeight(saltDose)}</strong> เพื่อลดผลกระทบทางเลือด<br><span class='location-highlight'>📍 <strong>ตำแหน่งเกลือ:</strong> ละลายน้ำเทลง <strong>ช่องปั๊มน้ำ (Pump sump)</strong> <span class='highlight-danger'>ห้ามเทลงช่อง Biofilter</span></span><br>และ <strong>เสริมจุลินทรีย์กลุ่ม Nitrobacter ปริมาณ ${formatWeight(microbeDose)}</strong><br><span class='location-highlight'>📍 <strong>ตำแหน่งจุลินทรีย์:</strong> เทลงใน <strong>ช่องกรอง (Biofilter)</strong></span>`;
+            }
+        }
+        else if(id === 'ph') {
+            if(val > 8.0) {
+                let molassesDose = (10 * vol) / 1600; 
+                msg = `⬇️ <strong style='font-size: 1.1em;'>pH สูงเกินไป</strong><br>`;
+                if(sysType === 'open') {
+                    msg += `<strong>ละลายกากน้ำตาล ปริมาณ ${formatWeight(molassesDose)}</strong> (อ้างอิง 7-10 กก./ไร่) ให้ใส่ สาดลงบ่อ ช่วงเวลา 11.00 - 12.00 น.<br><span class='location-highlight'>📍 <strong>ตำแหน่ง:</strong> สาดกระจายให้ทั่วบ่อเลี้ยง</span>`;
+                } else {
+                    msg += `แนะนำให้ <strong>ลดการเติมอากาศที่กวนน้ำรุนแรงชั่วคราว</strong> หรือเปลี่ยนถ่ายน้ำใหม่ <span class='highlight-danger'>ห้ามใช้กรดรุนแรงสาดโดยตรง</span>`;
+                }
+            } else {
+                msg = `⬆️ <strong style='font-size: 1.1em;'>pH ต่ำเกินไป (ต่ำกว่า 7.2)</strong><br>`;
+                if(sysType === 'open') {
+                    let limeDose = (20 * vol) / 1600; 
+                    msg += `<strong>ละลายปูนขาว ปริมาณ ${formatWeight(limeDose)}</strong> (อ้างอิง 20 กก./ไร่) สาดลงบ่อ ช่วงเวลา 08.00 - 09.00 น.<br><span class='location-highlight'>📍 <strong>ตำแหน่ง:</strong> สาดกระจายให้ทั่วบ่อเลี้ยง</span>`;
+                } else {
+                    let bicarbDose = (15 * vol) / 1000; 
+                    msg += `<span class='highlight-danger'>ห้ามใช้ปูนขาวการเกษตรในระบบปิด/RAS</span><br>แนะนำให้ <strong>ละลายโซเดียมไบคาร์บอเนต ปริมาณ ${formatWeight(bicarbDose)}</strong> ทยอยเติมเพื่อปรับ pH<br><span class='location-highlight'>📍 <strong>ตำแหน่ง:</strong> ละลายน้ำเทลง <strong>ช่องปั๊มน้ำ (Pump sump)</strong> แบ่งเท 2-3 รอบ <span class='highlight-danger'>ห้ามเทพรวดเดียว</span></span>`;
+                }
+            }
+        }
+        else if(id === 'temp') {
+            if(val > 32) {
+                if(sysType === 'open') msg = `☀️ <strong style='font-size: 1.1em;'>อุณหภูมิสูงกว่า 32 °C</strong><br>ให้ <strong>ลดแขนตีน้ำ 1 แขน</strong> (ทั้งนี้อ้างอิงออกซิเจนเป็นหลัก)`;
+                else msg = `☀️ <strong style='font-size: 1.1em;'>อุณหภูมิสูงกว่า 32 °C</strong><br>ให้ <strong>ลดกำลังปั๊มลมที่กวนผิวน้ำลง</strong> (ทั้งนี้อ้างอิงออกซิเจนเป็นหลัก)`;
+            } else {
+                if(sysType === 'open') msg = `❄️ <strong style='font-size: 1.1em;'>อุณหภูมิต่ำกว่า 28 °C</strong><br>ให้ <strong>ให้ตีน้ำเพิ่ม 1 แขน</strong> (ทั้งนี้อ้างอิงออกซิเจนเป็นหลัก)`;
+                else msg = `❄️ <strong style='font-size: 1.1em;'>อุณหภูมิต่ำกว่า 28 °C</strong><br>ปลาจะย่อยอาหารช้า <span class='highlight-danger'>ปรับลดอาหารลง 30-50% หรืองดให้อาหารชั่วคราว</span>`;
+            }
+        }
+        else if(id === 'alk') {
+            let bicarbDose = (20 * vol) / 1000; 
+            msg = `⚖️ <strong style='font-size: 1.1em;'>ความเป็นด่างตก</strong> ทำให้ค่า pH แกว่งรุนแรง<br>`;
+            if(sysType === 'open') {
+                msg += `แนะนำให้ <strong>สาดปูนมาร์ล หรือโซเดียมไบคาร์บอเนต ปริมาณ ${formatWeight(bicarbDose)}</strong> เพื่อสร้างสมดุล<br><span class='location-highlight'>📍 <strong>ตำแหน่ง:</strong> หว่านหรือสาดกระจายให้ทั่วบ่อเลี้ยง</span>`;
+            } else {
+                msg += `แนะนำให้ <strong>เติมโซเดียมไบคาร์บอเนต ปริมาณ ${formatWeight(bicarbDose)}</strong> เข้าในระบบอย่างช้าๆ<br><span class='location-highlight'>📍 <strong>ตำแหน่ง:</strong> ละลายน้ำแล้วทยอยเทลง <strong>ช่องปั๊มน้ำ (Pump sump)</strong></span>`;
+            }
+        }
+        else if(id === 'trans') {
+            if(val < 15) {
+                let waterToChange = formatVolume(vol * 0.20);
+                msg = `🌱 <strong style='font-size: 1.1em;'>ขุ่นมาก (< 15 ซม.)</strong> เสี่ยงแพลงก์ตอนบลูม<br>แนะนำให้ <strong>ลดอาหาร 10-20%, เปิดเครื่องตีน้ำเพิ่มช่วงกลางคืน, ถ่ายน้ำบางส่วน (${waterToChange}), ลดอินทรียวัตถุสะสม, และติดตาม DO กับ pH ทุกวัน</strong>`;
+            }
+            else if(val <= 20) msg = `👀 <strong style='font-size: 1.1em;'>เริ่มขุ่น (15-20 ซม.)</strong> DO กลางคืนอาจลดลง ควร <strong>ติดตามคุณภาพน้ำอย่างใกล้ชิด</strong>`;
+            else if(val > 40) msg = `💧 <strong style='font-size: 1.1em;'>ใสเกินไป (> 40 ซม.)</strong> แนะนำให้ <strong>ค่อยๆ เพิ่มความอุดมสมบูรณ์ของน้ำ, ลดการถ่ายน้ำที่ไม่จำเป็น, รักษาความสมดุลของแพลงก์ตอน</strong>`;
+            else msg = `🔍 <strong style='font-size: 1.1em;'>ค่อนข้างใส (30-40 ซม.)</strong> ยังใช้ได้แต่ควรเฝ้าระวัง อาหารธรรมชาติลดลง`;
+        }
+        
+        return msg;
+    }
+
+    function processData() {
+        let resultHTML = "";
+        let timeOfDay = document.getElementById('time-select').value;
+        let hasData = false;
+        
+        let pondVol = calculateVolume();
+        let sysType = document.getElementById('system-type').value;
+
+        // --- 1. คำนวณความเบี่ยงเบนจากเกณฑ์ภาพที่ 1, 2, 3 ---
+        let phVal = parseFloat(document.getElementById('ph').value);
+        let phDev = 0;
+        if(!isNaN(phVal)) {
+            hasData = true;
+            if(phVal < 7.2) {
+                let adviceStr = sysType === 'open' ? "ละลายปูนขาว 20 กก./ไร่ สาดลงบ่อเวลา 08.00-09.00 น." : "เติมโซเดียมไบคาร์บอเนตเพื่อดึง pH ขึ้น (ห้ามใช้ปูนขาวการเกษตรในระบบปิด)";
+                resultHTML += createResultBox("1. ความเป็นกรด-ด่าง (pH)", "ต่ำกว่า 7.2", adviceStr, "red");
+                phDev = 0.8;
+            } else if(phVal > 8.0) {
+                let adviceStr = sysType === 'open' ? "ละลายกากน้ำตาล 7-10 กก. ให้ใส่ สาดลงบ่อเวลา 11.00-12.00 น." : "ลดการเติมอากาศที่รุนแรงชั่วคราว หรือเปลี่ยนถ่ายน้ำใหม่ (ห้ามใช้กรดรุนแรง)";
+                resultHTML += createResultBox("1. ความเป็นกรด-ด่าง (pH)", "สูงกว่า 8.0", adviceStr, "red");
+                phDev = Math.min(1.0, (phVal - 8.0) * 0.5 + 0.5); 
+            } else {
+                resultHTML += createResultBox("1. ความเป็นกรด-ด่าง (pH)", "เหมาะสม (7.2 - 8.0)", "พีเอช ควรดูร่วมกับ แอมโมเนียและไนไตรท์เป็นสำคัญ", "green");
+                phDev = 0;
+            }
+        }
+
+        let doVal = parseFloat(document.getElementById('do').value);
+        let doDev = 0;
+        if(!isNaN(doVal)) {
+            hasData = true;
+            if(doVal < 3.0) {
+                let adviceStr = sysType === 'open' ? "ให้ตีน้ำเพิ่ม 1 แขน ครบ 1 ชั่วโมง วัดออกซิเจนใหม่อีกครั้ง" : "ให้เพิ่มกำลังปั๊มลม ครบ 1 ชั่วโมง วัดออกซิเจนใหม่อีกครั้ง";
+                resultHTML += createResultBox("2. ระดับออกซิเจน (DO)", "ต่ำกว่า 3.0 ppm", adviceStr, "red");
+                doDev = 1.0;
+            } else if(doVal > 8.0) {
+                let adviceStr = sysType === 'open' ? "ให้ปิดแขนตีน้ำ 1 แขน ครบ 1 ชั่วโมง วัดออกซิเจนใหม่อีกครั้ง" : "ให้ลดกำลังปั๊มลมลง ครบ 1 ชั่วโมง วัดออกซิเจนใหม่อีกครั้ง";
+                resultHTML += createResultBox("2. ระดับออกซิเจน (DO)", "สูงกว่า 8.0 ppm", adviceStr, "orange");
+                doDev = 0.3;
+            } else {
+                if(timeOfDay === 'morning') {
+                    if(doVal >= 4.0 && doVal <= 5.0) { resultHTML += createResultBox("2. ระดับออกซิเจน (DO)", "เหมาะสม (เช้า 4.0 - 5.0 ppm)", "ปกติ รักษาระดับการเติมอากาศ", "green"); doDev = 0; }
+                    else { resultHTML += createResultBox("2. ระดับออกซิเจน (DO)", "ไม่อยู่ในเกณฑ์เช้า (ควร 4.0-5.0 ppm)", "เฝ้าระวังอย่างใกล้ชิด และจัดการเติมอากาศให้เหมาะสม", "yellow"); doDev = 0.4; }
+                } else if(timeOfDay === 'afternoon') {
+                    if(doVal >= 5.0 && doVal <= 8.0) { resultHTML += createResultBox("2. ระดับออกซิเจน (DO)", "เหมาะสม (บ่าย 5.0 - 8.0 ppm)", "ปกติ รักษาระดับการเติมอากาศ", "green"); doDev = 0; }
+                    else { resultHTML += createResultBox("2. ระดับออกซิเจน (DO)", "ไม่อยู่ในเกณฑ์บ่าย (ควร 5.0-8.0 ppm)", "เฝ้าระวังอย่างใกล้ชิด และจัดการเติมอากาศให้เหมาะสม", "yellow"); doDev = 0.4; }
+                } else {
+                    resultHTML += createResultBox("2. ระดับออกซิเจน (DO)", "อยู่ในระดับที่ปลอดภัย (>3.0 และ <8.0)", "ควรตรวจวัดเทียบช่วงเช้า/บ่ายเพื่อความแม่นยำ", "green"); doDev = 0;
+                }
+            }
+        }
+
+        let tempVal = parseFloat(document.getElementById('temp').value);
+        let tempDev = 0;
+        if(!isNaN(tempVal)) {
+            hasData = true;
+            if(tempVal > 32) {
+                let adviceStr = sysType === 'open' ? "ให้ลดแขนตีน้ำ 1 แขน" : "ลดกำลังปั๊มลมกวนผิวน้ำ";
+                resultHTML += createResultBox("3. อุณหภูมิ", "สูงกว่า 32 °C", adviceStr + " (ทั้งนี้อ้างอิงออกซิเจนเป็นหลัก)", "red");
+                tempDev = 0.7;
+            } else if(tempVal < 28) {
+                let adviceStr = sysType === 'open' ? "ให้ตีน้ำเพิ่ม 1 แขน" : "เพิ่มปั๊มลมกวนน้ำ";
+                resultHTML += createResultBox("3. อุณหภูมิ", "ต่ำกว่า 28 °C", adviceStr + " (ทั้งนี้อ้างอิงออกซิเจนเป็นหลัก)", "orange");
+                tempDev = 0.5;
+            } else {
+                resultHTML += createResultBox("3. อุณหภูมิ", "เหมาะสม (28 - 30 °C)", "อุณหภูมิปกติ ไม่ต้องปรับเปลี่ยน", "green");
+                tempDev = 0;
+            }
+        }
+
+        let tanVal = parseFloat(document.getElementById('tan').value);
+        let tanDev = 0;
+        if(!isNaN(tanVal)) {
+            hasData = true;
+            if(tanVal > 1.0) {
+                let adviceStr = sysType === 'open' ? "แขวนซีโอไลท์ 15-20 กก./ไร่, ถ่ายน้ำรอบละ 15-20% แล้วเติมน้ำเข้า(ถ้ามี), ลดอาหาร 10-20%" : "ลดอาหาร 10-20%, ถ่ายน้ำ 15-20%, เสริมจุลินทรีย์ในช่องกรองชีวภาพ";
+                resultHTML += createResultBox("4. แอมโมเนียรวม (TAN)", "เกิน 1.0 ppm", adviceStr, "red");
+                tanDev = Math.min(1.0, tanVal * 0.5); 
+                if(phVal > 8.0 || tempVal > 30) tanDev = Math.min(1.0, tanDev * 1.5);
+            } else {
+                resultHTML += createResultBox("4. แอมโมเนียรวม (TAN)", "ไม่เกิน 1.0 ppm", "รักษาคุณภาพน้ำให้คงที่", "green");
+                tanDev = 0;
+            }
+        }
+
+        let no2Val = parseFloat(document.getElementById('no2').value);
+        let no2Dev = 0;
+        if(!isNaN(no2Val)) {
+            hasData = true;
+            if(no2Val > 10.0) {
+                resultHTML += createResultBox("5. ไนไตรท์ (NO<sub>2</sub><sup>-</sup>)", "อันตรายมาก (> 10.0 mg/L)", "ถ่ายน้ำวันละ 16-17%, เติมเกลือ 140 กก., เพิ่มออกซิเจน, ควบคุม pH 7.2-7.4, ลดอาหาร", "red");
+                no2Dev = 1.0;
+            } else if(no2Val > 6.0) {
+                resultHTML += createResultBox("5. ไนไตรท์ (NO<sub>2</sub><sup>-</sup>)", "เสี่ยงสูง (6.0 - 10.0 mg/L)", "ถ่ายน้ำอย่างต่อเนื่อง, เติมเกลือ, เพิ่มออกซิเจน, ควบคุม pH 7.2-7.4, ลดอาหาร", "orange");
+                no2Dev = 0.8;
+            } else if(no2Val > 3.0) {
+                resultHTML += createResultBox("5. ไนไตรท์ (NO<sub>2</sub><sup>-</sup>)", "เสี่ยงปานกลาง (3.0 - 6.0 mg/L)", "ถ่ายน้ำอย่างต่อเนื่อง, เติมเกลือ, เพิ่มออกซิเจน, ควบคุม pH 7.2-7.4, ลดอาหาร", "yellow");
+                no2Dev = 0.5;
+            } else if(no2Val >= 1.0) {
+                resultHTML += createResultBox("5. ไนไตรท์ (NO<sub>2</sub><sup>-</sup>)", "เสี่ยงต่ำ (ควรเฝ้าระวัง) (1.0 - 3.0 mg/L)", "เติมออกซิเจนในน้ำ ถ่ายน้ำอย่างต่อเนื่อง ควบคุมอาหาร", "green");
+                no2Dev = 0.2;
+            } else {
+                resultHTML += createResultBox("5. ไนไตรท์ (NO<sub>2</sub><sup>-</sup>)", "ปลอดภัย (< 1.0 mg/L)", "คุณภาพน้ำอยู่ในเกณฑ์ปลอดภัย", "green");
+                no2Dev = 0;
+            }
+        }
+
+        let alkVal = parseFloat(document.getElementById('alk').value);
+        let alkDev = 0;
+        if(!isNaN(alkVal)) {
+            hasData = true;
+            if(alkVal >= 100) { resultHTML += createResultBox("6. ความเป็นด่าง (Alkalinity)", "เหมาะสม", "ระบบน้ำมีตัวรองรับการแกว่งตัวของ pH เสถียรดี", "green"); alkDev = 0; }
+            else if(alkVal >= 40) { resultHTML += createResultBox("6. ความเป็นด่าง (Alkalinity)", "ต่ำกว่าเกณฑ์", "ค่า pH อาจแกว่งกว้าง ปลากะพงเครียดได้", "orange"); alkDev = 0.6; }
+            else { resultHTML += createResultBox("6. ความเป็นด่าง (Alkalinity)", "วิกฤต", "สภาพน้ำขาดสมดุลรุนแรง ทำให้ปลาช็อกและป่วยได้ง่าย", "red"); alkDev = 1.0; }
+        }
+
+        let transVal = parseFloat(document.getElementById('transparency').value);
+        let transDev = 0;
+        if(!isNaN(transVal)) {
+            hasData = true;
+            if(transVal < 15) { 
+                resultHTML += createResultBox("7. ความโปร่งใสของน้ำ", "ขุ่นมาก (< 15 ซม.)", "ลดอาหาร 10-20%, เปิดเครื่องตีน้ำเพิ่มช่วงกลางคืน, ถ่ายน้ำบางส่วน", "red"); 
+                transDev = 0.8; 
+            }
+            else if(transVal <= 20) { 
+                resultHTML += createResultBox("7. ความโปร่งใสของน้ำ", "เริ่มขุ่น (15-20 ซม.)", "DO กลางคืนอาจลดลง ควรติดตามคุณภาพน้ำอย่างใกล้ชิด", "orange"); 
+                transDev = 0.5; 
+            }
+            else if(transVal <= 30) { 
+                resultHTML += createResultBox("7. ความโปร่งใสของน้ำ", "เหมาะสม (20-30 ซม.)", "แพลงก์ตอนพอดี น้ำมีเสถียรภาพ เหมาะต่อการเจริญเติบโต", "green"); 
+                transDev = 0; 
+            }
+            else if(transVal <= 40) { 
+                resultHTML += createResultBox("7. ความโปร่งใสของน้ำ", "ค่อนข้างใส (30-40 ซม.)", "ยังใช้ได้ แต่ควรเฝ้าระวัง อาหารธรรมชาติลดลง", "yellow"); 
+                transDev = 0.3; 
+            }
+            else { 
+                resultHTML += createResultBox("7. ความโปร่งใสของน้ำ", "ใสเกินไป (> 40 ซม.)", "ค่อยๆ เพิ่มความอุดมสมบูรณ์ของน้ำ, ลดการถ่ายน้ำที่ไม่จำเป็น", "red"); 
+                transDev = 0.6; 
+            }
+        }
+
+        if(!hasData || pondVol <= 0) {
+            document.getElementById('shap-summary').style.display = 'none';
+            document.getElementById('result-content').innerHTML = "<p style='color:red; text-align:center; font-weight:bold; font-size:1.2em;'>โปรดตรวจสอบว่าได้กรอก <br>1) มิติขนาดบ่อให้ถูกต้อง (> 0) <br>2) พารามิเตอร์น้ำอย่างน้อย 1 ช่อง <br>เพื่อให้โปรแกรมประมวลผลครับ</p>";
+            document.getElementById('result-section').style.display = 'block';
+            return;
+        }
+
+        const baseWeights = { DO: 30, TAN: 25, NO2: 15, pH: 10, Temp: 10, Alk: 5, Trans: 5 };
+        
+        let impacts = [];
+        if(!isNaN(doVal)) impacts.push({ name: 'ระดับออกซิเจน (DO)', id: 'do', val: doVal, rawScore: doDev * baseWeights.DO, color: '#D32F2F' });
+        if(!isNaN(tanVal)) impacts.push({ name: 'แอมโมเนียรวม (TAN)', id: 'tan', val: tanVal, rawScore: tanDev * baseWeights.TAN, color: '#F57C00' });
+        if(!isNaN(no2Val)) impacts.push({ name: 'ไนไตรท์ (NO<sub>2</sub><sup>-</sup>)', id: 'no2', val: no2Val, rawScore: no2Dev * baseWeights.NO2, color: '#512DA8' });
+        if(!isNaN(phVal)) impacts.push({ name: 'ความเป็นกรด-ด่าง (pH)', id: 'ph', val: phVal, rawScore: phDev * baseWeights.pH, color: '#7B1FA2' });
+        if(!isNaN(tempVal)) impacts.push({ name: 'อุณหภูมิ (Temp)', id: 'temp', val: tempVal, rawScore: tempDev * baseWeights.Temp, color: '#E64A19' });
+        if(!isNaN(alkVal)) impacts.push({ name: 'ความเป็นด่าง (Alkalinity)', id: 'alk', val: alkVal, rawScore: alkDev * baseWeights.Alk, color: '#1976D2' });
+        if(!isNaN(transVal)) impacts.push({ name: 'ความโปร่งใส (Transparency)', id: 'trans', val: transVal, rawScore: transDev * baseWeights.Trans, color: '#388E3C' });
+
+        let totalImpactScore = impacts.reduce((sum, item) => sum + item.rawScore, 0);
+        let shapHTML = "";
+
+        if(totalImpactScore === 0) {
+            shapHTML = `
+            <div class="shap-container" style="border-color: #2E7D32;">
+                <div class="shap-title" style="color:#2E7D32; border-bottom-color:#C8E6C9;">
+                    <span>🌟</span> บทสรุปภาพรวมสถานการณ์ (สภาวะปกติ)
+                </div>
+                <div style="font-size:1.15em; line-height: 1.6; color:#1B5E20; text-align:center; margin-bottom:10px; padding-top:10px;">
+                    ปริมาตรน้ำในบ่อที่คำนวณได้: <strong style="color:#1565C0;">${pondVol.toFixed(2)} ลบ.ม. (หรือ ${(pondVol*1000).toFixed(0)} ลิตร)</strong><br>
+                    จากการประเมินสภาพแวดล้อมภายในบ่อเลี้ยงของคุณ พบว่าพารามิเตอร์ทุกตัวแปรอยู่ในเกณฑ์ <strong>"สมดุลและปลอดภัย"</strong> <br>
+                    ระบบนิเวศในขณะนี้เอื้อต่อการเจริญเติบโตของปลากะพงอย่างเต็มที่ <strong>(ประเมินความเสี่ยงเร่งด่วน: 0%)</strong>
+                </div>
+                <div style="background-color: #E8F5E9; padding: 15px; border-radius: 5px; margin-top:15px; border-left: 5px solid #2E7D32;">
+                    <strong style="color: #2E7D32;">📌 ข้อเสนอแนะแนวทางปฏิบัติ:</strong>
+                    <p style="margin: 5px 0 0 0; color: #333; line-height: 1.6;">
+                        เยี่ยมมากครับ! ขอให้คุณรักษาระบบการให้อาหารและการจัดการน้ำตามรอบปกติต่อไป และหมั่นตรวจวัดค่าพารามิเตอร์ต่างๆ อย่างสม่ำเสมอเพื่อคงสภาวะที่ดีนี้ไว้ครับ
+                    </p>
+                </div>
+            </div>`;
+        } else {
+            impacts.sort((a, b) => b.rawScore - a.rawScore);
+            let topImpact = impacts[0];
+            let secondImpact = (impacts.length > 1 && impacts[1].rawScore > 0) ? impacts[1] : null;
+            
+            shapHTML = `
+            <div class="shap-container">
+                <div class="shap-title">
+                    <span>📊</span> สรุปวิเคราะห์ปัจจัยเสี่ยงและลำดับความเร่งด่วน
+                </div>
+                <div style="font-size:1.1em; color:#1565C0; font-weight:bold; margin-bottom:15px;">
+                    💧 ปริมาตรน้ำในบ่อที่คำนวณได้: ${pondVol.toFixed(2)} ลบ.ม. (หรือ ${(pondVol*1000).toFixed(0)} ลิตร)
+                </div>
+            `;
+            
+            impacts.forEach(item => {
+                if(item.rawScore > 0) {
+                    let percent = ((item.rawScore / totalImpactScore) * 100).toFixed(1);
+                    shapHTML += `
+                    <div class="shap-item">
+                        <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.1em; color:#333;">
+                            <span>${item.name}</span>
+                            <span style="color:${item.color}">${percent}%</span>
+                        </div>
+                        <div class="shap-bar-bg">
+                            <div class="shap-bar-fill" style="width: ${percent}%; background-color: ${item.color};"></div>
+                        </div>
+                    </div>`;
+                }
+            });
+
+            shapHTML += `
+                <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #E0E0E0;">
+                    <strong style="font-size: 1.25em; color: #1A237E;">📝 รายงานภาพรวมสถานการณ์ภายในบ่อ:</strong>
+                    <p style="font-size: 1.15em; line-height: 1.7; color: #333; margin-top: 8px;">
+                        พบปัญหาหลักที่ส่งผลกระทบรุนแรงที่สุดคือ <strong>${topImpact.name}</strong> 
+                        ซึ่งถือเป็นต้นตอของความเสี่ยงถึง ${((topImpact.rawScore / totalImpactScore) * 100).toFixed(1)}% ของปัญหาทั้งหมด 
+            `;
+            if (secondImpact) {
+                shapHTML += `มิหนำซ้ำ สภาพน้ำยังถูกตอกย้ำด้วยปัญหาจาก <strong>${secondImpact.name}</strong> (${((secondImpact.rawScore / totalImpactScore) * 100).toFixed(1)}%) ที่เข้ามาเป็นตัวแปรแทรกซ้อน`;
+            }
+            shapHTML += `</p></div>`;
+
+            let sysNameText = sysType === 'open' ? 'ระบบเปิด (บ่อดิน)' : 'ระบบปิด (RAS / บ่อปูน / ถังผ้าใบ)';
+            shapHTML += `
+                <div class="action-box">
+                    <div class="action-title">
+                        <span>🛠️</span> ข้อเสนอแนะแนวทางปฏิบัติและปริมาณสารเคมีที่แนะนำ:
+                    </div>
+                    <p style="font-size: 1.1em; margin-bottom: 15px; color: #555;">เพื่อฟื้นฟูสภาพน้ำ <strong>(ปริมาตรน้ำ ${pondVol.toFixed(2)} ลบ.ม. ใน${sysNameText})</strong> ขอแนะนำขั้นตอนปฏิบัติดังนี้:</p>
+                    <ul class="action-list">
+            `;
+            
+            impacts.forEach(item => {
+                if(item.rawScore > 0) {
+                    shapHTML += `<li><strong style="color: ${item.color};">การจัดการ ${item.name}:</strong><br> ${getAdvice(item.id, item.val, pondVol, sysType)}</li>`;
+                }
+            });
+
+            if (sysType === 'closed') {
+                let biofilterMin = (pondVol * 0.15).toFixed(1);
+                let biofilterMax = (pondVol * 0.20).toFixed(1);
+                let flowMin = pondVol.toFixed(0);
+                let flowMax = (pondVol * 2).toFixed(0);
+                
+                shapHTML += `<li style="background: #E3F2FD; border-color: #90CAF9;"><strong style="color: #1565C0;">⚙️ ข้อแนะนำเพิ่มเติมสำหรับการออกแบบระบบกรอง (RAS):</strong><br> 
+                เพื่อให้ระบบรองรับของเสียได้อย่างมีประสิทธิภาพ <strong>บ่อที่มีปริมาตรน้ำ ${pondVol.toFixed(1)} ลบ.ม.</strong> ควรมีสเปกดังนี้: <br>
+                • <strong>ขนาดบ่อกรองชีวภาพ (Biofilter):</strong> ควรมีปริมาตรประมาณ 15-20% ของน้ำรวมในระบบ ซึ่งคือ <strong>${biofilterMin} - ${biofilterMax} ลบ.ม.</strong> เพื่อให้แบคทีเรียย่อยสลายของเสียได้ทัน<br>
+                • <strong>ขนาดดรัมฟิลเตอร์ (Drum Filter) หรือกรองกายภาพ:</strong> ควรเลือกรุ่นที่รองรับอัตราการไหล (Flow Rate) <strong>${flowMin} - ${flowMax} ลบ.ม./ชั่วโมง</strong> (Turnover rate ที่ 1-2 รอบ/ชม.)
+                </li>`;
+            }
+
+            shapHTML += `</ul></div></div>`;
+        }
+
+        document.getElementById('shap-summary').innerHTML = shapHTML;
+        document.getElementById('shap-summary').style.display = 'block';
+        
+        document.getElementById('result-content').innerHTML = resultHTML;
+        document.getElementById('result-section').style.display = 'block';
+        showNotif("✅ ประมวลผลเสร็จสิ้น เลื่อนลงเพื่อดูผลลัพธ์");
+    }
+</script>
+
+</body>
+</html>
